@@ -108,7 +108,7 @@ const App = (props: InterviewProps) => {
 
   return (
     <div className="App">
-      <header className="App-header">
+      {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
@@ -121,7 +121,7 @@ const App = (props: InterviewProps) => {
         >
           Learn React
         </a>
-      </header>
+      </header> */}
       <div className="chat-container">
         {messages.map((msg, index) => (
           <div key={index} className={`message ${msg.direction}`}>
