@@ -9,7 +9,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <App interview_prompt='You are my girlfriend' />
   </React.StrictMode>
 );
 
