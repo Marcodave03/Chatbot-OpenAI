@@ -24,7 +24,7 @@ const App = (props: InterviewProps) => {
       model: "gpt-3.5-turbo",
       messages: [
         systemMessage,
-        { role: "user", content: `Kamu pura pura jadi pacar perempuan aku, tanya kabar aku dari  ${props.interview_prompt}. Gunakan kata kata yang informal dan ngobrol layaknya manusia. Jangan berlebihan gombalnya. Jangan bilang lu pura pura cok` }
+        { role: "user", content: `Kamu jadi pacar perempuan aku, tanya kabar aku dari ${props.interview_prompt}. Gunakan kata kata yang informal dan ngobrol layaknya manusia. 2-3 kalimat cukup` }
       ]
     };
 
@@ -35,17 +35,16 @@ const App = (props: InterviewProps) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(apiRequestBody)
-    }).then((data) => {
-      return data.json();
-    }).then((data) => {
-      console.log(data);
-      setMessages([...messages, {
-        message: data.choices[0].message.content,
-        sender: "ChatGPT",
-        direction: "incoming"
-      }]);
-      setIsTyping(false);
-    });
+    }).then((data) => data.json())
+      .then((data) => {
+        console.log(data);
+        setMessages([...messages, {
+          message: data.choices[0].message.content,
+          sender: "Christy",
+          direction: "incoming"
+        }]);
+        setIsTyping(false);
+      });
   }
 
   useEffect(() => {
@@ -69,13 +68,8 @@ const App = (props: InterviewProps) => {
 
   async function processMessageToChatGPT(chatMessages: any) { 
     let apiMessages = chatMessages.map((messageObject: any) => {
-      let role = "";
-      if (messageObject.sender === "ChatGPT") {
-        role = "assistant";
-      } else {
-        role = "user";
-      }
-      return { role: role, content: messageObject.message }
+      let role = messageObject.sender === "Christy" ? "assistant" : "user";
+      return { role, content: messageObject.message };
     });
 
     const apiRequestBody = {
@@ -93,22 +87,21 @@ const App = (props: InterviewProps) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(apiRequestBody)
-    }).then((data) => {
-      return data.json();
-    }).then((data) => {
-      console.log(data);
-      setMessages([...chatMessages, {
-        message: data.choices[0].message.content,
-        sender: "ChatGPT",
-        direction: "incoming"
-      }]);
-      setIsTyping(false);
-    });
+    }).then((data) => data.json())
+      .then((data) => {
+        console.log(data);
+        setMessages([...chatMessages, {
+          message: data.choices[0].message.content,
+          sender: "Christy",
+          direction: "incoming"
+        }]);
+        setIsTyping(false);
+      });
   }
 
   return (
     <div className="App">
-      <header className="App-header">
+      {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
@@ -121,20 +114,27 @@ const App = (props: InterviewProps) => {
         >
           Learn React
         </a>
-      </header>
+      </header> */}
       <div className="chat-container">
         {messages.map((msg, index) => (
           <div key={index} className={`message ${msg.direction}`}>
-            <strong>{msg.sender}:</strong> {msg.message}
+            <div className={`bubble ${msg.direction}`}>
+              <strong>{msg.sender}:</strong> {msg.message}
+            </div>
           </div>
         ))}
-        {isTyping && <div className="typing-indicator">ChatGPT is typing...</div>}
+        {isTyping && <div className="typing-indicator">Christy is typing...</div>}
         <div className="input-container">
           <input 
             type="text"
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             placeholder="Type your message here..."
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                handleSend();
+              }
+            }}
           />
           <button onClick={handleSend} disabled={isTyping}>Send</button>
         </div>
